@@ -1,1 +1,1 @@
-@echo seq%1.sql > seq%1.sql
+@echo seq%1.sql > sql\seq%1.sql
