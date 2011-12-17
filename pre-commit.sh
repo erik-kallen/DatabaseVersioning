@@ -1,0 +1,16 @@
+# The directory we are monitoring (relative to the root of the repository)
+DIR=sql
+# String to find in the tags of interest
+TAGPATTERN="release-.*"
+# Files of interest
+FILEPATTERN="seq.*\.sql"
+
+lasttag=$(
+git log --decorate=full --simplify-by-decoration --pretty=oneline HEAD | # The log
+grep '(' |                                                               # Only include entries with names
+sed -r -e 's/^[^\(]*\(([^\)]*)\).*$/\1/' -e 's/,/\n/g' -e 's/ //g' |     # Select only the names, one line per name, delete spaces
+grep "tag:$TAGPATTERN\$" |                                               # Only tags of interest
+sed 's/tag://' |                                                         # Remove the tag: prefix
+head -n 1)                                                               # Only take the first one
+
+git ls-tree -r --full-tree --name-only $lasttag | grep "^$DIR/$FILEPATTERN$"
