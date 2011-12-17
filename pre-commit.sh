@@ -13,4 +13,13 @@ grep "tag:$TAGPATTERN\$" |                                               # Only 
 sed 's/tag://' |                                                         # Remove the tag: prefix
 head -n 1)                                                               # Only take the first one
 
-git ls-tree -r --full-tree --name-only $lasttag | grep "^$DIR/$FILEPATTERN$"
+immutable=$(git ls-tree -r --full-tree --name-only $lasttag | grep "^$DIR/$FILEPATTERN$")
+changed=$(git diff --cached --name-only | grep "^$DIR/$FILEPATTERN$")
+
+for change in $changed
+do
+	if [ "$(echo $immutable | grep $change)" ]
+	then
+		echo "Cannot change file $change"
+	fi
+done
