@@ -16,10 +16,13 @@ head -n 1)                                                               # Only 
 immutable=$(git ls-tree -r --full-tree --name-only $lasttag | grep "^$DIR/$FILEPATTERN$")
 changed=$(git diff --cached --name-only | grep "^$DIR/$FILEPATTERN$")
 
+code=0
 for change in $changed
 do
 	if [ "$(echo $immutable | grep $change)" ]
 	then
 		echo "Cannot change file $change"
+		code=1
 	fi
 done
+exit $code
