@@ -1,3 +1,5 @@
+#!/bin/sh
+
 # The directory we are monitoring (relative to the root of the repository)
 DIR=sql
 # String to find in the tags of interest
