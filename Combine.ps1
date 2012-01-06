@@ -20,22 +20,24 @@ $pairs =
    "HEAD" } |                                                                           # End with the current head
 % { if ($x -ne $null) { @{ "Old" = $x; "New" = $_ }; $x = $null } else { $x = $_ } }    # Combine the items into (old, new) pairs
 
+$rootdir = "$(git rev-parse --show-toplevel)"
+
 $pairs |
 %	-Begin { $first = 1 } {
 	$filelist = @(
-		Invoke-Expression "git diff $($_.Old) $($_.New) --name-status -- $dir" |  # Use git diff to return the changes between the old and the new revision
-		Select-String "^A" |                                                      # Find all adds
-		% { $_ -replace "^A[ \t]+", "" } |                                        # Remove the A[space] in the beginning of all lines.
-		Select-String "^$dir/$filepattern$" |                                     # Include only the files we care about
-		Sort-Object                                                               # Sort the files by name
+		Invoke-Expression "git diff $($_.Old) $($_.New) --name-status -- $rootdir\$dir" |  # Use git diff to return the changes between the old and the new revision
+		Select-String "^A" |                                                               # Find all adds
+		% { $_ -replace "^A[ \t]+", "" } |                                                 # Remove the A[space] in the beginning of all lines.
+		Select-String "^$dir/$filepattern$" |                                              # Include only the files we care about
+		Sort-Object                                                                        # Sort the files by name
 	)
-	
+
 	if ($filelist.Length -ne 0) {
 		if ($first -eq 0) {
 			$versionseparator -replace "\\1", $_.Old
 		}
 		$first = 0
 
-		$filelist | % { Get-Content $_; echo $fileseparator }
+		$filelist | % { Get-Content "$rootdir\$_"; echo $fileseparator }
 	}
 }
