@@ -38,7 +38,7 @@ IE, the content of the combined file is the concatenation of all the seqNNNN.sql
  
 This repo is my attempt to use Git to help with this workflow. It contains the following parts:
 
- - A combine.sh script that generates the combined script based on the content and history of the sql directory.
+ - A combine script that generates the combined script based on the content and history of the sql directory. Both a bash (.sh) and PowerShell (.ps1) version exist.
  - A pre-commit hook (copy to .git/hooks) that prevents modification to any seqNNNN.sql file that is part of a release.
 
 You might (debatable) also want to prevent automatic merge of the seqNNNN.sql files. To do this, use the supplied .gitattributes file and run the following commands to make it work:
